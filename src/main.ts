@@ -16,10 +16,12 @@ async function run() {
         });
 
         const permission = result.data.permission;
-        console.log(`User ${username} has ${permission} permission on this repository.`)
+        const isTrusted = ["admin", "write"].includes(permission);
+
+        console.log(`${isTrusted ? "✅" : "⚠️"} ${username} has ${permission} permission on this repository.`);
 
         core.setOutput("permission", permission);
-        core.setOutput("is-trusted", ["admin", "write"].includes(permission));
+        core.setOutput("is_trusted", isTrusted);
     } catch (error) {
         if (error instanceof Error) {
             core.setFailed(error.message);
