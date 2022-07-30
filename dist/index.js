@@ -46,12 +46,14 @@ const octokit = github.getOctokit(token);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const username = github.context.actor;
             const result = yield octokit.rest.repos.getCollaboratorPermissionLevel({
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
-                username: github.context.actor,
+                username,
             });
             const permission = result.data.permission;
+            console.log(`User ${username} has ${permission} permissions on this repository.`);
             core.setOutput("permission", permission);
             core.setOutput("has-write", ["admin", "write"].includes(permission));
         }

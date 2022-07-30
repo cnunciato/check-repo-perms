@@ -1,10 +1,6 @@
 name: Check Repo Permissions
 description: Get the repository permissions of the GitHub user who triggered the current workflow.
 author: cnunciato
-inputs:
-  username:
-    required: true
-    description: The GitHub username whose permissions you want to check.
 outputs:
   permission:
     description: The user's permissions for this repo. On error, returns `none`.
