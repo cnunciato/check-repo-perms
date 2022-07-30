@@ -49,7 +49,7 @@ function run() {
             const actor = github.context.actor;
             const sender = github.context.payload.sender && github.context.payload.sender.login;
             const username = actor;
-            console.log({ actor, sender });
+            console.log(github.context);
             const result = yield octokit.rest.repos.getCollaboratorPermissionLevel({
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,

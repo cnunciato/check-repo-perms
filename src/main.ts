@@ -10,7 +10,7 @@ async function run() {
         const sender = github.context.payload.sender && github.context.payload.sender.login;
         const username = actor;
 
-        console.log({ actor, sender });
+        console.log(github.context);
 
         const result = await octokit.rest.repos.getCollaboratorPermissionLevel({
             owner: github.context.repo.owner,
