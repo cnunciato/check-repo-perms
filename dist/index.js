@@ -46,19 +46,22 @@ const octokit = github.getOctokit(token);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const actor = github.context.actor;
-            const sender = github.context.payload.sender && github.context.payload.sender.login;
-            const username = actor;
-            console.log(JSON.stringify(github.context, null, 4));
+            core.debug(JSON.stringify({ "github.context": github.context }, null, 4));
+            const username = github.context.actor;
             const result = yield octokit.rest.repos.getCollaboratorPermissionLevel({
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
                 username,
             });
             const permission = result.data.permission;
-            console.log(`User ${username} has ${permission} permission on this repository.`);
+            const isTrusted = ["admin", "write"].includes(permission);
+            // ${isTrusted ? "✅" : "⚠️"}
+            core.info(`${username} has ${permission} permission on this repository.`);
+            if (!isTrusted) {
+                core.warning(`⚠️ ${username} is untrusted.`);
+            }
             core.setOutput("permission", permission);
-            core.setOutput("has-write", ["admin", "write"].includes(permission));
+            core.setOutput("is_trusted", isTrusted);
         }
         catch (error) {
             if (error instanceof Error) {

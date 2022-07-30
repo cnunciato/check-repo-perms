@@ -7,7 +7,6 @@ const octokit = github.getOctokit(token);
 async function run() {
     try {
         core.debug(JSON.stringify({ "github.context": github.context }, null, 4));
-        core.
 
         const username = github.context.actor;
         const result = await octokit.rest.repos.getCollaboratorPermissionLevel({
