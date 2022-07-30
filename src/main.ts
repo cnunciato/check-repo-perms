@@ -6,12 +6,9 @@ const octokit = github.getOctokit(token);
 
 async function run() {
     try {
-        const actor = github.context.actor;
-        const sender = github.context.payload.sender && github.context.payload.sender.login;
-        const username = actor;
+        core.debug(JSON.stringify({ "github.context": github.context }, null, 4));
 
-        console.log(JSON.stringify(github.context, null, 4));
-
+        const username = github.context.actor;
         const result = await octokit.rest.repos.getCollaboratorPermissionLevel({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
@@ -22,7 +19,7 @@ async function run() {
         console.log(`User ${username} has ${permission} permission on this repository.`)
 
         core.setOutput("permission", permission);
-        core.setOutput("has-write", ["admin", "write"].includes(permission))
+        core.setOutput("is-trusted", ["admin", "write"].includes(permission));
     } catch (error) {
         if (error instanceof Error) {
             core.setFailed(error.message);
