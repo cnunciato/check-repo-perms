@@ -7,7 +7,7 @@ const octokit = github.getOctokit(token);
 async function run() {
     try {
 
-        // Log the full context for debugging.
+        // Log the full context in debug mode.
         core.debug(JSON.stringify({ "github.context": github.context }, null, 4));
 
         const username = github.context.actor;
@@ -20,12 +20,12 @@ async function run() {
         const permission = result.data.permission;
         const isTrusted = ["admin", "write"].includes(permission);
 
-        core.info(`${username} has ${permission} permission on this repository.`);
+        core.info(`${username} has '${permission}' permission on this repository.`);
 
         if (isTrusted) {
-            core.notice(`✅ ${username} is trusted.`);
+            core.notice(`✅ ${username} is a trusted user on this repository.`);
         } else {
-            core.warning(`⚠️ ${username} is untrusted.`);
+            core.warning(`⚠️ ${username} is not a trusted user on this repository.`);
         }
 
         core.setOutput("permission", permission);
