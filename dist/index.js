@@ -46,7 +46,10 @@ const octokit = github.getOctokit(token);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const username = github.context.actor;
+            const actor = github.context.actor;
+            const sender = github.context.payload.sender && github.context.payload.sender.login;
+            const username = actor;
+            console.log({ actor, sender });
             const result = yield octokit.rest.repos.getCollaboratorPermissionLevel({
                 owner: github.context.repo.owner,
                 repo: github.context.repo.repo,
