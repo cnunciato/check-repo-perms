@@ -1,11 +1,13 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: Check Repo Permissions
+description: Get the repository permissions of the GitHub user who triggered the current workflow.
+author: cnunciato
 inputs:
-  milliseconds: # change this
+  username:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: The GitHub username whose permissions you want to check.
+outputs:
+  permission:
+    description: The user's permissions for this repo. On error, returns `none`.
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: node16
+  main: dist/index.js

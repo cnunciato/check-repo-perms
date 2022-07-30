@@ -1,19 +1,24 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import * as core from "@actions/core";
+import * as github from "@actions/github";
 
-async function run(): Promise<void> {
-  try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+const token = core.getInput("token");
+const octokit = github.getOctokit(token);
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
-  }
+async function run() {
+    try {
+        const result = await octokit.rest.repos.getCollaboratorPermissionLevel({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            username: github.context.actor,
+        });
+        const permission = result.data.permission;
+        core.setOutput("permission", permission);
+        core.setOutput("has-write", ["admin", "write"].includes(permission))
+    } catch (error) {
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        }
+    }
 }
 
-run()
+run();
