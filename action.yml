@@ -1,9 +1,15 @@
 name: Check Repo Permissions
 description: Get the repository permissions of the GitHub user who triggered the current workflow.
 author: cnunciato
+inputs:
+  token:
+    required: true
+    description: The GitHub token.
 outputs:
   permission:
     description: The user's permissions for this repo. On error, returns `none`.
+  has-write:
+    description: Whether the user's permissions grant write access to the repository.
 runs:
   using: node16
   main: dist/index.js

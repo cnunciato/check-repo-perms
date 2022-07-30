@@ -53,7 +53,7 @@ function run() {
                 username,
             });
             const permission = result.data.permission;
-            console.log(`User ${username} has ${permission} permissions on this repository.`);
+            console.log(`User ${username} has ${permission} permission on this repository.`);
             core.setOutput("permission", permission);
             core.setOutput("has-write", ["admin", "write"].includes(permission));
         }
