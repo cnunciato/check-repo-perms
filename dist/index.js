@@ -49,22 +49,27 @@ function run() {
             // Log the full context in debug mode.
             core.debug(JSON.stringify({ "github.context": github.context }, null, 4));
             const username = github.context.actor;
-            const result = yield octokit.rest.repos.getCollaboratorPermissionLevel({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
+            const orgName = github.context.repo.owner;
+            const repoName = github.context.repo.repo;
+            const permsResult = yield octokit.rest.repos.getCollaboratorPermissionLevel({
+                owner: orgName,
+                repo: repoName,
                 username,
             });
-            const permission = result.data.permission;
-            const isTrusted = ["admin", "write"].includes(permission);
+            const membershipResult = yield octokit.rest.orgs.getMembershipForUser({
+                org: orgName,
+                username,
+            });
+            const permission = permsResult.data.permission;
+            const hasWrite = ["admin", "write"].includes(permission);
+            const isAdmin = permission === "admin";
+            const isMemberOfOrg = membershipResult.data.state === "active";
             core.info(`${username} has '${permission}' permission on this repository.`);
-            if (isTrusted) {
-                core.notice(`✅ ${username} is a trusted user on this repository.`);
-            }
-            else {
-                core.warning(`⚠️ ${username} is not a trusted user on this repository.`);
-            }
+            core.info(`${username} ${isMemberOfOrg ? "is" : "is not"} a member of the ${orgName} organization.`);
             core.setOutput("permission", permission);
-            core.setOutput("is_trusted", isTrusted);
+            core.setOutput("has_write", hasWrite);
+            core.setOutput("is_admin", isAdmin);
+            core.setOutput("is_member_of_org", isMemberOfOrg);
         }
         catch (error) {
             if (error instanceof Error) {
