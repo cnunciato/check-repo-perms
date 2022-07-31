@@ -56,23 +56,16 @@ function run() {
                 repo: repoName,
                 username,
             });
-            const membershipResult = yield octokit.rest.orgs.checkMembershipForUser({
-                org: orgName,
-                username,
-            });
             const permission = permsResult.data.permission;
             const hasWrite = ["admin", "write"].includes(permission);
             const isAdmin = permission === "admin";
-            const isMemberOfOrg = membershipResult.data;
             core.info(`${username} has '${permission}' permission on this repository.`);
-            core.info(`${username} ${isMemberOfOrg ? "is" : "is not"} a member of the ${orgName} organization.`);
             core.setOutput("permission", permission);
             core.setOutput("has_write", hasWrite);
             core.setOutput("is_admin", isAdmin);
-            core.setOutput("is_member_of_org", isMemberOfOrg);
         }
         catch (error) {
-            core.debug(JSON.stringify({ error }, null, 4));
+            core.error(JSON.stringify({ error }, null, 4));
             if (error instanceof Error) {
                 core.setFailed(error.message);
             }
